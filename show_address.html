@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="shortcut icon" type="image/jpg" href="address_book_logo-removebg-preview.png"/>
+        <title>Show Address</title>
+</head>
+
+<body>
+    <div class="p-3 text-center">
+        <h1>Address List</h1>
+    </div>
+
+    <div>
+        <div class="table-responsive table-responsive-sm" style="background: #007FFF;">
+            <table class="table table-bordered text-white" id="addressTable" style="border: 2px solid #13274F;">
+                <thead style="border: 2px solid #13274F;">
+                    <tr>
+                        <th style="border: 2px solid #13274F;">SR #</th>
+                        <th style="border: 2px solid #13274F;">Name</th>
+                        <th style="border: 2px solid #13274F;">Phone Number</th>
+                        <th style="border: 2px solid #13274F;">Zip Code</th>
+                        <th style="border: 2px solid #13274F;">Address</th>
+                        <th style="border: 2px solid #13274F;">Update Data</th>
+                        <th style="border: 2px solid #13274F;">Delete Data</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <ul>
+        <button class="p-2 rounded" style="background: #007FFF;border: none;"><a href="add_address.html"
+                style="text-decoration: none;background: #007FFF;color: white;">Add Another Address</a> <br></button>
+        <button class="p-2 rounded" style="background: #007FFF;border: none;"><a href="home page.html"
+                style="text-decoration: none;background: #007FFF;color: white;">Back to home page</a> <br></button>
+    </ul>
+
+    <script>
+        window.onload = function () {
+            var addressTable = document.getElementById("addressTable");
+            var tbody = addressTable.querySelector("tbody");
+            var formValues = JSON.parse(localStorage.getItem("formValues")) || [];
+
+            function updateTable() {
+                tbody.innerHTML = "";
+
+                for (var i = 0; i < formValues.length; i++) {
+                    var newRow = tbody.insertRow();
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+                    var cell5 = newRow.insertCell(4);
+
+                    var cell6 = newRow.insertCell(5);
+                    var cell66 = document.createElement("button");
+                    var cell666 = document.createTextNode("Edit");
+                    cell66.appendChild(cell666);
+                    cell6.appendChild(cell66);
+
+                    var cell661 = document.createElement("button");
+                    var cell6661 = document.createTextNode("Save");
+                    cell661.appendChild(cell6661);
+                    cell6.appendChild(cell661);
+
+                    var cell7 = newRow.insertCell(6);
+                    var cell77 = document.createElement("button");
+                    var cell777 = document.createTextNode("Delete");
+                    cell77.appendChild(cell777);
+                    cell7.appendChild(cell77);
+
+                    cell1.innerHTML = i + 1;
+                    cell2.innerHTML = formValues[i].name;
+                    cell3.innerHTML = formValues[i].phone;
+                    cell4.innerHTML = formValues[i].zip;
+                    cell5.innerHTML = formValues[i].address;
+
+                    cell1.style.border = '2px solid #13274F';
+                    cell2.style.border = '2px solid #13274F';
+                    cell3.style.border = '2px solid #13274F';
+                    cell4.style.border = '2px solid #13274F';
+                    cell5.style.border = '2px solid #13274F';
+                    cell6.style.border = '2px solid #13274F';
+                    cell7.style.border = '2px solid #13274F';
+
+                    cell1.style.width = "5%";
+                    cell2.style.width = "15%";
+                    cell3.style.width = "10%";
+                    cell4.style.width = "7%";
+                    cell5.style.width = "43%";
+                    cell6.style.width = "10%";
+                    cell7.style.width = "10%";
+
+                    cell66.addEventListener('click', function () {
+                        editRow(this);
+                    });
+
+                    cell661.addEventListener('click', function () {
+                        saveRow(this);
+                    });
+
+                    cell77.addEventListener('click', function () {
+                        deleteRow(this);
+                    });
+                }
+            }
+
+            function editRow(button) {
+                var row = button.parentNode.parentNode;
+                var nameCell = row.cells[1];
+                var phoneCell = row.cells[2];
+                var zipCell = row.cells[3];
+                var addressCell = row.cells[4];
+
+                var originalData = {
+                    name: nameCell.textContent,
+                    phone: phoneCell.textContent,
+                    zip: zipCell.textContent,
+                    address: addressCell.textContent
+                };
+
+                nameCell.innerHTML = '<input type="text" value="' + originalData.name + '">';
+                phoneCell.innerHTML = '<input type="text" value="' + originalData.phone + '">';
+                zipCell.innerHTML = '<input type="text" value="' + originalData.zip + '">';
+                addressCell.innerHTML = '<input type="text" value="' + originalData.address + '">';
+            }
+
+            function saveRow(button) {
+                var row = button.parentNode.parentNode;
+                var nameInput = row.cells[1].querySelector('input');
+                var phoneInput = row.cells[2].querySelector('input');
+                var zipInput = row.cells[3].querySelector('input');
+                var addressInput = row.cells[4].querySelector('input');
+
+                var updatedData = {
+                    name: nameInput.value,
+                    phone: phoneInput.value,
+                    zip: zipInput.value,
+                    address: addressInput.value
+                };
+
+                var rowIndex = row.rowIndex - 1;
+                formValues[rowIndex] = updatedData;
+                localStorage.setItem("formValues", JSON.stringify(formValues));
+
+                updateTable();
+            }
+
+            function deleteRow(button) {
+                var row = button.parentNode.parentNode;
+                var rowIndex = row.rowIndex - 1;
+                formValues.splice(rowIndex, 1);
+                localStorage.setItem("formValues", JSON.stringify(formValues));
+
+                updateTable();
+            }
+            updateTable();
+        };
+    </script>
+</body>
+
+</html>
